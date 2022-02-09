@@ -21,3 +21,6 @@ Route::get('/delete/company/{company}',[CompanyController::class, 'deleteCompany
 Route::get('/update/company/{company}',[CompanyController::class, 'updateCompany']);
 Route::post('/update/{company}',[CompanyController::class,'storeUpdate']);
 Route::get('/import-company',[CompanyController::class, 'importCompany']);
+Route::post('/checkImport', [CompanyController::class, 'processImport']);
+Route::post('/storeImport', [CompanyController::class, 'storeImport'])->name('store.import'); //issaugo csv i db
+Route::post('/', [CompanyController::class, 'Import']);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use DB;
 
 class CompanyController extends Controller
 {
@@ -80,12 +82,53 @@ class CompanyController extends Controller
         return view('pages.import-company');
     }
 
-    public function storeImport(Company $company, Request $request){
-        if($company->logo){
-            File::delete(storage_path('app/public/'.$company->logo));
+    // public function processImport(Request $request){
+    //     $path = $request->file('item')->storeAs('public/data', 'data.csv');
+    //     $File = Storage::get($path);
+
+    //     $File = explode(PHP_EOL,$File);
+    //     $item = [];
+    //     foreach ($File as $data){
+    //         $item[] = explode(';', $data);
+    //         dd($File);
+    //     }
+
+    //     return view('pages.checkImport', compact('item'));
+    // }
+
+    public function processImport(Request $request){
+        $path = $request->file('data')->store('public/data'); //issaugoja ir nurodo kelia
+        $File = Storage::get($path); //paima faila
+        $File = explode(PHP_EOL,$File); // pavercia csv i masyva
+        $data = []; 
+
+        foreach($File as $k => $v ) 
+        {
+            $data[$k] = explode(';', $v);
         }
-        Company::where('id', $company->id)->update($request->only(['company','code','vat','address','director','description']));
-        return redirect('/company/'.$company->id);
+        // dd($data);
+        // $File = explode(';', $File);
+        
+        return view('pages.checkImport', compact('data'));
+
     }
 
+    public function storeImport(Request $request)
+    {
+        //$data = unserialize($_POST['data']);
+        $data=[];
+        foreach($_POST['data'] as $k => $v)
+        {
+            $data[$k] = json_decode($v);
+        }   
+        //dd($data);
+
+
+         foreach($data as $k => $v ){
+             DB::table('companies')->insert(['company' => $v[0], 'code' => $v[1], 'vat' => $v[2], 'address' => $v[3], 'director' => $v[4], 'description' => $v[5], 'logo' => $v[6]]);
+         }
+
+       return redirect('/');
+    }
+ 
 }
