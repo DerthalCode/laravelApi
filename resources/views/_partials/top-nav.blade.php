@@ -7,6 +7,7 @@
             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                 <li class="nav-item active"><a class="nav-link" href="#!">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
+                @if (Auth::check())
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -16,7 +17,9 @@
                         <a class="dropdown-item" href="/logout">Atsijungti</a>
                     </div>
                 </li>
-                
+                @else
+                    <a href="/login">Prisijungti</a>
+                @endif
             </ul>
         </div>
     </div>
