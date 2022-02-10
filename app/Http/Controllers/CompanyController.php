@@ -6,9 +6,15 @@ use App\Models\Company;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CompanyController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth', ['except'=>['index', 'showCompany']]);
+    }
+
     public function index(){
         $companies = Company::paginate(6);
         //dd($companies);
@@ -36,6 +42,7 @@ class CompanyController extends Controller
             $fileName = NULL;
         }
         // dd(request()->all());
+        // dd(Auth::id());
         Company::create([
             'company'=>request('company'),
             'code'=>request('code'),
@@ -43,7 +50,8 @@ class CompanyController extends Controller
             'address'=>request('address'),
             'director'=>request('director'),
             'description'=>request('description'),
-            'logo'=>$fileName
+            'logo'=>$fileName,
+            'user_id'=>Auth::id()
         ]);
         return redirect('/');
     }
@@ -54,12 +62,17 @@ class CompanyController extends Controller
     }
 
     public function deleteCompany(Company $company){
+        if(Gate::denies('delete-company', $company)){
+            dd('Tu nerturi teises! Bet zinau kur gaut...');
+        }
         $company->delete();
         return redirect('/');
     }
 
     public function updateCompany(Company $company){
-        
+        if(Gate::denies('edit-company', $company)){
+            dd('Tu nerturi teises! Bet zinau kur galima gaut...');
+        }
         return view('pages.edit-company', compact('company'));
     }
 
@@ -78,23 +91,7 @@ class CompanyController extends Controller
         return redirect('/company/'.$company->id);
     }
 
-    public function importCompany(){
-        return view('pages.import-company');
-    }
-
-    // public function processImport(Request $request){
-    //     $path = $request->file('item')->storeAs('public/data', 'data.csv');
-    //     $File = Storage::get($path);
-
-    //     $File = explode(PHP_EOL,$File);
-    //     $item = [];
-    //     foreach ($File as $data){
-    //         $item[] = explode(';', $data);
-    //         dd($File);
-    //     }
-
-    //     return view('pages.checkImport', compact('item'));
-    // }
+  
 
     public function processImport(Request $request){
         $path = $request->file('data')->store('public/data'); //issaugoja ir nurodo kelia
@@ -111,6 +108,10 @@ class CompanyController extends Controller
         
         return view('pages.checkImport', compact('data'));
 
+    }
+
+    public function importCompany(){
+        return view('pages.import-company');
     }
 
     public function storeImport(Request $request)

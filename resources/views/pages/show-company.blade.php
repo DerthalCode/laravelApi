@@ -14,5 +14,15 @@
             <li>Vadovas: {{$company->director}}</li>
             <li>Veikla: {{$company->description}}</li>
         </ul>
+        <form action="/company/{{$company->id}}/comment" method="post">
+            @csrf
+            <div class="form-group">
+                <textarea name="body" class="form-control" placeholder="Jusu komentaras"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit">Komentuoti</button>
+            </div>
+        </form>
+
 </div>
 @endsection

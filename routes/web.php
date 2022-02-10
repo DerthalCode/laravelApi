@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CommentControler;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,8 @@ Route::get('/import-company',[CompanyController::class, 'importCompany']);
 Route::post('/checkImport', [CompanyController::class, 'processImport']);
 Route::post('/storeImport', [CompanyController::class, 'storeImport'])->name('store.import'); //issaugo csv i db
 Route::post('/', [CompanyController::class, 'Import']);
+Route::post('/company/{company}/comment', [CompanyController::class, 'create']);
+Auth::routes();
+Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
