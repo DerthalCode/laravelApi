@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Company;
+use App\Models\Comment;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\CompaniesResource;
 
 class CompanyController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth', ['except'=>['index', 'showCompany']]);
+        $this->middleware('auth', ['except'=>['index', 'showCompany', 'companies', 'company']]);
     }
 
     public function index(){
@@ -58,7 +60,11 @@ class CompanyController extends Controller
 
     public function showCompany (Company $company){
 
-        return view('pages.show-company', compact('company'));
+        $comments = Comment::where('company_id',$company->id)->get();
+
+        //dd($comments);
+
+        return view('pages.show-company', compact('company','comments'));
     }
 
     public function deleteCompany(Company $company){
@@ -131,5 +137,14 @@ class CompanyController extends Controller
 
        return redirect('/');
     }
- 
+
+    public function companies(){
+        $companies=Company::all();
+        return CompaniesResource::collection($companies);
+    }
+
+    public function company(Company $company){
+        
+        return new CompaniesResource($company);
+    }
 }

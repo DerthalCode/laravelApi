@@ -25,7 +25,7 @@ Route::get('/import-company',[CompanyController::class, 'importCompany']);
 Route::post('/checkImport', [CompanyController::class, 'processImport']);
 Route::post('/storeImport', [CompanyController::class, 'storeImport'])->name('store.import'); //issaugo csv i db
 Route::post('/', [CompanyController::class, 'Import']);
-Route::post('/company/{company}/comment', [CompanyController::class, 'create']);
+Route::post('/company/{company}/comment', [App\Http\Controllers\CommentController::class, 'create']);
 Auth::routes();
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 

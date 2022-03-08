@@ -14,6 +14,13 @@
             <li>Vadovas: {{$company->director}}</li>
             <li>Veikla: {{$company->description}}</li>
         </ul>
+        <span>Komentarai:</span>
+        <ul>
+            @foreach ($comments as $k => $v )
+            <li>{{$v->body}}</li>
+            @endforeach
+        </ul>
+        
         <form action="/company/{{$company->id}}/comment" method="post">
             @csrf
             <div class="form-group">

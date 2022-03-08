@@ -16,7 +16,7 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Company $company)
+    public function create(Company $company, Request $request)
     {
         Comment::create([
             'body'=>\request('body'),

@@ -2,6 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CompanyController;
+use App\Models\Company;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\API\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +21,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/companies',[CompanyController::class,'companies']);
+Route::get('/company/{company}',[CompanyController::class,'company']);
+Route::post('/add-company', [ApiController::class, 'addCompany']);
+// Route::get('/user-company', [ApiController::class, 'userCompany']);
+// Route::delete('/delete-company/{id}', [ApiController::class, 'destroy']);
+// Route::post('/update/{id}', [ApiController::class, 'update']);
+
+
+Route::post('login',[AuthController::class,'login']);
+Route::post('register',[AuthController::class,'register']);
+Route::group(['middleware' => ['auth:sanctum']], function(){
+    Route::post('logout',[AuthController::class,'logout']);
 });
